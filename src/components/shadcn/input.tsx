@@ -1,7 +1,7 @@
 import * as React from "react"
 import { useFormContext } from "react-hook-form"
 
-import { FormControl, FormField, FormItem } from "@/components/shadcn/form"
+import { FormControl, FormField, FormItem, FormMessage } from "@/components/shadcn/form"
 import { cn } from "@/lib/utils"
 
 interface InputFormProps extends React.ComponentProps<"input"> {
@@ -34,11 +34,14 @@ function InputForm({ name, ...props }: InputFormProps) {
         return (
           <FormItem>
             <FormControl>
-              <Input
-                {...field}
-                {...props}
-                onChange={field.onChange}
-              />
+              <div className="flex flex-col gap-2">
+                <Input
+                  {...field}
+                  {...props}
+                  onChange={field.onChange}
+                />
+                <FormMessage />
+              </div>
             </FormControl>
           </FormItem>
         )

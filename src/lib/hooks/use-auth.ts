@@ -76,7 +76,6 @@ export const useSignIn = () => {
       router.push("/dashboard")
     },
     onError: (error: APIError) => {
-      console.error("Sign in error:", error)
       console.error(error.message || "Sign in failed")
     },
   })

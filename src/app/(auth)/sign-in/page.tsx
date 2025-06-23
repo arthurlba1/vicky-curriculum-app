@@ -2,12 +2,12 @@
 
 import { Loader2Icon } from "lucide-react"
 
+import { AlertError } from "@/app/(auth)/sign-in/actions"
 import { Button } from "@/components/shadcn/button"
 import { ZodForm, useZodForm } from "@/components/shadcn/form"
 import { TypographyH3 } from "@/components/shadcn/typography"
 import { signInSchema, type SignInData } from "@/lib/validations/auth"
 import { useSignIn } from "@/lib/hooks/use-auth"
-
 
 export default function SignInPage() {
   const form = useZodForm({
@@ -32,6 +32,7 @@ export default function SignInPage() {
                 <div className="flex flex-col gap-4 w-full">
                     <Input name="email" placeholder="Email" />
                     <Input name="password" placeholder="Password" type="password" />
+                    {signInMutation.error && AlertError(signInMutation.error.statusCode)}
                     <Button type="submit" disabled={signInMutation.isPending}>
                         {signInMutation.isPending && <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />}
                         Sign In
