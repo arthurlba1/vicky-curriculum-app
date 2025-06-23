@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { Loader2Icon } from "lucide-react"
 
+import { AlertError } from "@/app/(auth)/sign-up/actions"
 import { Button } from "@/components/shadcn/button"
 import { ZodForm, useZodForm } from "@/components/shadcn/form"
 import { TypographyH3, TypographyMuted } from "@/components/shadcn/typography"
@@ -39,6 +40,7 @@ export default function SignUpPage() {
                     <Input name="email" placeholder="Email" />
                     <Input name="password" placeholder="Password" type="password" />
                     <Input name="confirmPassword" placeholder="Confirm Password" type="password" />
+                    {signUpMutation.error && AlertError(signUpMutation.error.statusCode)}
                     <Button  type="submit"  disabled={signUpMutation.isPending}>
                         {signUpMutation.isPending && <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />}
                         Sign Up
