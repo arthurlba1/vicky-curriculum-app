@@ -1,36 +1,24 @@
 "use client"
 
-import { useRouter } from "next/navigation"
+import { Loader2Icon } from "lucide-react"
 
 import { Button } from "@/components/shadcn/button"
 import { ZodForm, useZodForm } from "@/components/shadcn/form"
-import { TypographyH3, TypographyMuted } from "@/components/shadcn/typography"
+import { TypographyH3 } from "@/components/shadcn/typography"
 import { signInSchema, type SignInData } from "@/lib/validations/auth"
+import { useSignIn } from "@/lib/hooks/use-auth"
 
 
 export default function SignInPage() {
-  const router = useRouter()
   const form = useZodForm({
     schema: signInSchema,
     mode: "onSubmit"
   })
 
-  const handleSignIn = async (data: SignInData) => {
-    try {
-      console.log("Sign in data:", data)
-      
-      // TODO: Implement actual authentication logic here
-      // Example: await signIn(data.email, data.password)
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      // Redirect to dashboard on success
-      router.push("/dashboard")
-    } catch (error) {
-      console.error("Sign in failed:", error)
-      // Handle error (show toast, etc.)
-    }
+  const signInMutation = useSignIn()
+
+  const handleSignIn = (data: SignInData) => {
+    signInMutation.mutate(data)
   }
 
   return (
@@ -44,7 +32,10 @@ export default function SignInPage() {
                 <div className="flex flex-col gap-4 w-full">
                     <Input name="email" placeholder="Email" />
                     <Input name="password" placeholder="Password" type="password" />
-                    <Button type="submit">Sign In</Button>
+                    <Button type="submit" disabled={signInMutation.isPending}>
+                        {signInMutation.isPending && <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />}
+                        Sign In
+                    </Button>
                 </div>
             )}
         </ZodForm>

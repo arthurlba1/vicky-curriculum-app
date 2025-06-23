@@ -1,37 +1,24 @@
 "use client"
 
-import { useRouter } from "next/navigation"
+import Link from "next/link"
+import { Loader2Icon } from "lucide-react"
 
 import { Button } from "@/components/shadcn/button"
 import { ZodForm, useZodForm } from "@/components/shadcn/form"
 import { TypographyH3, TypographyMuted } from "@/components/shadcn/typography"
 import { signUpSchema, type SignUpData } from "@/lib/validations/auth"
-import Link from "next/link"
+import { useSignUp } from "@/lib/hooks/use-auth"
 
-
-export default function SignInPage() {
-  const router = useRouter()
+export default function SignUpPage() {
   const form = useZodForm({
     schema: signUpSchema,
     mode: "onSubmit"
   })
 
-  const handleSignIn = async (data: SignUpData) => {
-    try {
-      console.log("Sign in data:", data)
-      
-      // TODO: Implement actual authentication logic here
-      // Example: await signIn(data.email, data.password)
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      // Redirect to dashboard on success
-      router.push("/dashboard")
-    } catch (error) {
-      console.error("Sign in failed:", error)
-      // Handle error (show toast, etc.)
-    }
+  const signUpMutation = useSignUp()
+
+  const handleSignUp = (data: SignUpData) => {
+    signUpMutation.mutate(data)
   }
 
   return (
@@ -42,7 +29,7 @@ export default function SignInPage() {
               Create resumes tailored to every opportunity.
           </TypographyMuted>
       </div>
-        <ZodForm className="w-full max-w-md" form={form} onSubmit={handleSignIn}>
+        <ZodForm className="w-full max-w-md" form={form} onSubmit={handleSignUp}>
             {({ Input }) => (
                 <div className="flex flex-col gap-4 w-full">
                     <div className="flex justify-between w-full gap-4">
@@ -52,7 +39,10 @@ export default function SignInPage() {
                     <Input name="email" placeholder="Email" />
                     <Input name="password" placeholder="Password" type="password" />
                     <Input name="confirmPassword" placeholder="Confirm Password" type="password" />
-                    <Button type="submit">Sign In</Button>
+                    <Button  type="submit"  disabled={signUpMutation.isPending}>
+                        {signUpMutation.isPending && <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />}
+                        Sign Up
+                    </Button>
                 </div>
             )}
         </ZodForm>
