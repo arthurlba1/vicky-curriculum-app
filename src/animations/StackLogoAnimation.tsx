@@ -35,8 +35,8 @@ const StackLogoAnimation = () => {
       })
 
       .to(barsRef.current, {
-        y: (i) => [-50, -10, 0][i],
-        x: (i) => [-60, -20, 30][i],
+        y: (i) => [-50, -10, -3][i],
+        x: (i) => [-56, -20, 33][i],
         rotationZ: (i) => [-100, -70, -35][i],
         duration: 0.6,
       }, "+=0.4")
