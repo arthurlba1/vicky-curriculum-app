@@ -2,8 +2,12 @@
 
 import { useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { useAuth } from "@/lib/hooks/use-auth"
 import { Loader2Icon } from "lucide-react"
+
+import { AppSidebar } from "@/components/app-sidebar"
+import { SidebarInset, SidebarProvider } from "@/components/shadcn/sidebar"
+import { useAuth } from "@/lib/hooks/use-auth"
+
 
 interface ProtectedLayoutProps {
   children: React.ReactNode
@@ -34,5 +38,14 @@ export default function ProtectedLayout({ children }: ProtectedLayoutProps) {
     return null
   }
 
-  return <>{children}</>
+  return (
+    <SidebarProvider>
+      <AppSidebar />
+      <SidebarInset>
+        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+          {children}
+        </div>
+      </SidebarInset>
+    </SidebarProvider>
+  )
 };
