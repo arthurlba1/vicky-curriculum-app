@@ -22,10 +22,12 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { cn } from "@/lib/utils"
 import { Label } from "@/components/shadcn/label"
 import { InputForm } from "@/components/shadcn/input"
+import { CalendarForm } from "./calendar"
 
 
 const components = {
   Input: InputForm,
+  Calendar: CalendarForm,
 }
 
 interface UseZodFormProps<S extends z.ZodSchema>
@@ -60,6 +62,7 @@ type ZodFormProps<S extends z.ZodType<any, any, any>> = {
   children: (props: {
     form: UseFormReturn<z.TypeOf<S>, unknown, undefined>
     Input: FormComponent<S, typeof InputForm>
+    Calendar: FormComponent<S, typeof CalendarForm>
   }) => React.JSX.Element
   className?: string
   action?: string
