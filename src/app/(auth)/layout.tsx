@@ -6,7 +6,7 @@ import Image from 'next/image';
 
 import StackLogoAnimation from '@/animations/StackLogoAnimation';
 import { Button } from '@/components/shadcn/button';
-import { Silk } from '@/components/react-bits/Silk/Silk';
+import { Silk } from '@/components/react-bits/Silk';
 import { TypographyH3 } from '@/components/shadcn/typography';
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
