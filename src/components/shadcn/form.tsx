@@ -22,12 +22,16 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { cn } from "@/lib/utils"
 import { Label } from "@/components/shadcn/label"
 import { InputForm } from "@/components/shadcn/input"
-import { CalendarForm } from "./calendar"
+import { CalendarForm } from "@/components/shadcn/calendar"
+import { TextareaForm } from "@/components/shadcn/textarea"
+import { MultiSelectForm } from "@/components/shadcn/multi-select"
 
 
 const components = {
   Input: InputForm,
   Calendar: CalendarForm,
+  Textarea: TextareaForm,
+  MultiSelect: MultiSelectForm,
 }
 
 interface UseZodFormProps<S extends z.ZodSchema>
@@ -63,6 +67,8 @@ type ZodFormProps<S extends z.ZodType<any, any, any>> = {
     form: UseFormReturn<z.TypeOf<S>, unknown, undefined>
     Input: FormComponent<S, typeof InputForm>
     Calendar: FormComponent<S, typeof CalendarForm>
+    Textarea: FormComponent<S, typeof TextareaForm>
+    MultiSelect: FormComponent<S, typeof MultiSelectForm>
   }) => React.JSX.Element
   className?: string
   action?: string

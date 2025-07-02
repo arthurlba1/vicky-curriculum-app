@@ -24,7 +24,12 @@ const variants = {
     "disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
   ),
 
-  text: "bg-transparent border-none outline-none font-semibold text-md w-full placeholder:text-muted-foreground/50 p-0",
+  text: cn(
+    "bg-transparent border-none outline-none font-semibold text-md w-full p-0",
+    "placeholder:text-muted-foreground/50 caret-white",
+    "aria-invalid:placeholder-destructive",
+    "aria-invalid:shadow-[0_1px_0_0_theme('colors.destructive')]",
+  )
 }
 
 function Input({ className, type, variant = "default", ...props }: InputProps) {
