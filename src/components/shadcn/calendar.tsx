@@ -266,6 +266,7 @@ function CalendarForm({ name, variant = 'default', placeholder = 'Pick a date', 
                   />
                 </PopoverContent>
               </Popover>
+              <FormMessage />
           </FormItem>
         )
       }}
