@@ -1,13 +1,14 @@
-"use client"
+'use client';
 
-import Link from "next/link"
-import { ChevronRight, SquarePen } from "lucide-react"
+import Link from 'next/link';
+
+import { ChevronRight, SquarePen } from 'lucide-react';
 
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/shadcn/collapsible"
+} from '@/components/shadcn/collapsible';
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -18,20 +19,20 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-} from "@/components/shadcn/sidebar"
-import { NavMainItem } from "@/types"
+} from '@/components/shadcn/sidebar';
+import { NavMainItem } from '@/types';
 
 type AppNavMainProps = {
-  showGroupLabel?: boolean
-  items: NavMainItem[]
-}
+  showGroupLabel?: boolean;
+  items: NavMainItem[];
+};
 
 export function AppNavMain({ items, showGroupLabel = true }: AppNavMainProps) {
   return (
     <SidebarGroup>
       {showGroupLabel && <SidebarGroupLabel>Experiences</SidebarGroupLabel>}
       <SidebarMenu>
-        {items.map((item) => (
+        {items.map(item => (
           <Collapsible key={item.title} asChild defaultOpen={item.isActive}>
             <SidebarMenuItem>
               <SidebarMenuButton asChild tooltip="Create new experience">
@@ -56,7 +57,7 @@ export function AppNavMain({ items, showGroupLabel = true }: AppNavMainProps) {
                   </CollapsibleTrigger>
                   <CollapsibleContent>
                     <SidebarMenuSub>
-                      {item.items?.map((subItem) => (
+                      {item.items?.map(subItem => (
                         <SidebarMenuSubItem key={subItem.title}>
                           <SidebarMenuSubButton asChild>
                             <Link href={subItem.url}>
@@ -74,5 +75,5 @@ export function AppNavMain({ items, showGroupLabel = true }: AppNavMainProps) {
         ))}
       </SidebarMenu>
     </SidebarGroup>
-  )
+  );
 }

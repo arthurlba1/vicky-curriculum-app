@@ -1,6 +1,6 @@
-import { CircleX } from "lucide-react"
+import { CircleX } from 'lucide-react';
 
-import { Alert, AlertTitle } from "@/components/shadcn/alert"
+import { Alert, AlertTitle } from '@/components/shadcn/alert';
 
 export const AlertError = (statusCode: number) => {
   switch (statusCode) {
@@ -13,6 +13,6 @@ export const AlertError = (statusCode: number) => {
             Incorrect Email or Password, please check and try again.
           </AlertTitle>
         </Alert>
-      )
+      );
   }
-}
+};

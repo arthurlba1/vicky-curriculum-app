@@ -1,14 +1,15 @@
-"use client"
+'use client';
 
-import { motion, Transition } from "framer-motion";
-import { useEffect, useRef, useState, useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from 'react';
+
+import { Transition, motion } from 'framer-motion';
 
 type BlurTextProps = {
   text?: string;
   delay?: number;
   className?: string;
-  animateBy?: "words" | "letters";
-  direction?: "top" | "bottom";
+  animateBy?: 'words' | 'letters';
+  direction?: 'top' | 'bottom';
   threshold?: number;
   rootMargin?: string;
   animationFrom?: Record<string, string | number>;
@@ -24,31 +25,31 @@ const buildKeyframes = (
 ): Record<string, Array<string | number>> => {
   const keys = new Set<string>([
     ...Object.keys(from),
-    ...steps.flatMap((s) => Object.keys(s)),
+    ...steps.flatMap(s => Object.keys(s)),
   ]);
 
   const keyframes: Record<string, Array<string | number>> = {};
-  keys.forEach((k) => {
-    keyframes[k] = [from[k], ...steps.map((s) => s[k])];
+  keys.forEach(k => {
+    keyframes[k] = [from[k], ...steps.map(s => s[k])];
   });
   return keyframes;
 };
 
 const BlurText: React.FC<BlurTextProps> = ({
-  text = "",
+  text = '',
   delay = 200,
-  className = "",
-  animateBy = "words",
-  direction = "top",
+  className = '',
+  animateBy = 'words',
+  direction = 'top',
   threshold = 0.1,
-  rootMargin = "0px",
+  rootMargin = '0px',
   animationFrom,
   animationTo,
-  easing = (t) => t,
+  easing = t => t,
   onAnimationComplete,
   stepDuration = 0.35,
 }) => {
-  const elements = animateBy === "words" ? text.split(" ") : text.split("");
+  const elements = animateBy === 'words' ? text.split(' ') : text.split('');
   const [inView, setInView] = useState(false);
   const ref = useRef<HTMLParagraphElement>(null);
 
@@ -69,20 +70,20 @@ const BlurText: React.FC<BlurTextProps> = ({
 
   const defaultFrom = useMemo(
     () =>
-      direction === "top"
-        ? { filter: "blur(10px)", opacity: 0, y: -50 }
-        : { filter: "blur(10px)", opacity: 0, y: 50 },
+      direction === 'top'
+        ? { filter: 'blur(10px)', opacity: 0, y: -50 }
+        : { filter: 'blur(10px)', opacity: 0, y: 50 },
     [direction]
   );
 
   const defaultTo = useMemo(
     () => [
       {
-        filter: "blur(5px)",
+        filter: 'blur(5px)',
         opacity: 0.5,
-        y: direction === "top" ? 5 : -5,
+        y: direction === 'top' ? 5 : -5,
       },
-      { filter: "blur(0px)", opacity: 1, y: 0 },
+      { filter: 'blur(0px)', opacity: 1, y: 0 },
     ],
     [direction]
   );
@@ -118,12 +119,12 @@ const BlurText: React.FC<BlurTextProps> = ({
               index === elements.length - 1 ? onAnimationComplete : undefined
             }
             style={{
-              display: "inline-block",
-              willChange: "transform, filter, opacity",
+              display: 'inline-block',
+              willChange: 'transform, filter, opacity',
             }}
           >
-            {segment === " " ? "\u00A0" : segment}
-            {animateBy === "words" && index < elements.length - 1 && "\u00A0"}
+            {segment === ' ' ? '\u00A0' : segment}
+            {animateBy === 'words' && index < elements.length - 1 && '\u00A0'}
           </motion.span>
         );
       })}
