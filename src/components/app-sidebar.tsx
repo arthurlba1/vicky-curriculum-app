@@ -16,6 +16,8 @@ import {
   SidebarMenuSubItem,
 } from '@/components/shadcn/sidebar';
 import { NAV_EXPERIENCES, NAV_JOB_VACANCIES } from '@/types';
+import { Separator } from '@/components/shadcn/separator';
+
 
 export const AppSidebar = ({
   ...props
@@ -35,6 +37,7 @@ export const AppSidebar = ({
               />
             </Link>
           </SidebarMenuItem>
+          <Separator />
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
