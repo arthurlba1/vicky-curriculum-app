@@ -3,6 +3,7 @@ import Link from 'next/link';
 import * as React from 'react';
 
 import { AppNavMain } from '@/components/app-nav-main';
+import { Separator } from '@/components/shadcn/separator';
 import {
   Sidebar,
   SidebarContent,
@@ -16,8 +17,6 @@ import {
   SidebarMenuSubItem,
 } from '@/components/shadcn/sidebar';
 import { NAV_EXPERIENCES, NAV_JOB_VACANCIES } from '@/types';
-import { Separator } from '@/components/shadcn/separator';
-
 
 export const AppSidebar = ({
   ...props
