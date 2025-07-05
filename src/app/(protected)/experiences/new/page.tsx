@@ -91,7 +91,7 @@ export default function NewExperiencePage() {
     <div className="flex flex-col h-full relative">
       {/* Header Section - Sticky with transparency */}
       <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-none border-b border-border/50">
-        <div className="flex flex-col gap-4 p-6">
+        <div className="flex flex-col gap-4 p-4">
           <BlurText
             text="Create New Experiences"
             delay={100}
@@ -100,6 +100,7 @@ export default function NewExperiencePage() {
             className="text-3xl font-bold"
           />
         </div>
+        <Separator />
       </div>
 
       {/* Content Section */}

@@ -1,8 +1,13 @@
 'use client';
 
+import { useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
+import { AnimatePresence, motion } from 'framer-motion';
+import { ChevronDown, ChevronUp, TriangleAlert } from 'lucide-react';
+
 import { ExperienceCard } from '@/components/experience-card';
+import { Button } from '@/components/shadcn/button';
 import { techSkillsList } from '@/types/tech-skills';
 import { getSkillLabel } from '@/utils';
 
@@ -19,6 +24,7 @@ export function ProjectForm({
   MultiSelect,
   form,
 }: ProjectFormProps) {
+  const [expanded, setExpanded] = useState(false);
   const skills = form.watch('skills') || [];
 
   return (
@@ -49,27 +55,64 @@ export function ProjectForm({
               options={techSkillsList}
               placeholder="Select all skills used in the project"
             />
+            <span className="text-muted-foreground/50 text-sm flex items-center gap-2">
+              <TriangleAlert className="sm:w-4 h-4" /> Note: For better
+              performance, add a description of how you used each skill in this
+              position.
+            </span>
           </div>
         </ExperienceCard.Footer>
       </ExperienceCard.Wrapper>
 
-      {skills?.map((skill: string) => (
-        <ExperienceCard.Wrapper key={skill} isLoading={false}>
-          <ExperienceCard.Header>
-            <span className="text-lg font-semibold text-foreground">
-              {getSkillLabel(skill)}
-            </span>
-          </ExperienceCard.Header>
-          <ExperienceCard.Content>
-            <Textarea
-              name={`skillDescriptions.${skill}`}
-              placeholder={`Describe how you used ${getSkillLabel(skill)} in this role`}
-              variant="text"
-              rows={2}
-            />
-          </ExperienceCard.Content>
-        </ExperienceCard.Wrapper>
-      ))}
+      {skills.length > 0 && (
+        <Button
+          variant="ghost"
+          size="sm"
+          className="self-start"
+          onClick={() => setExpanded(prev => !prev)}
+        >
+          {expanded ? (
+            <>
+              <ChevronUp className="w-4 h-4 mr-1" />
+              Collapse Skills
+            </>
+          ) : (
+            <>
+              <ChevronDown className="w-4 h-4 mr-1" />
+              Show All Skills ({skills.length})
+            </>
+          )}
+        </Button>
+      )}
+
+      <AnimatePresence>
+        {expanded &&
+          skills.map((skill: string, index: number) => (
+            <motion.div
+              key={skill}
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2, delay: index * 0.05 }}
+            >
+              <ExperienceCard.Wrapper isLoading={false}>
+                <ExperienceCard.Header>
+                  <span className="text-lg font-semibold text-foreground">
+                    {getSkillLabel(skill)}
+                  </span>
+                </ExperienceCard.Header>
+                <ExperienceCard.Content>
+                  <Textarea
+                    name={`skillDescriptions.${skill}`}
+                    placeholder={`Describe how you used ${getSkillLabel(skill)} in this role`}
+                    variant="text"
+                    rows={2}
+                  />
+                </ExperienceCard.Content>
+              </ExperienceCard.Wrapper>
+            </motion.div>
+          ))}
+      </AnimatePresence>
     </div>
   );
 }

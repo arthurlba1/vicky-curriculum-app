@@ -8,6 +8,8 @@ import { CSSPlugin } from 'gsap/CSSPlugin';
 
 // components/StackLogoAnimation.tsx
 
+// components/StackLogoAnimation.tsx
+
 gsap.registerPlugin(CSSPlugin);
 gsap.config({ force3D: true });
 
