@@ -57,7 +57,7 @@ function Calendar({
       showOutsideDays={showOutsideDays}
       className={cn(
         variant === 'text'
-          ? 'bg-transparent p-0 border-none text-white'
+          ? 'bg-transparent p-0 border-none text-foreground'
           : 'bg-background group/calendar p-3 [--cell-size:--spacing(8)] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent',
         String.raw`rtl:**:[.rdp-button\_next>svg]:rotate-180`,
         String.raw`rtl:**:[.rdp-button\_previous>svg]:rotate-180`,
@@ -104,9 +104,15 @@ function Calendar({
         ),
         dropdown_root: cn(
           'relative has-focus:border-ring border border-input shadow-xs has-focus:ring-ring/50 has-focus:ring-[3px] rounded-md',
+          'bg-background text-foreground dark:bg-popover dark:text-popover-foreground',
+          '[&>select]:bg-background [&>select]:text-foreground dark:[&>select]:bg-popover dark:[&>select]:text-popover-foreground',
+          '[&>select]:border-none [&>select]:outline-none [&>select]:appearance-none',
           defaultClassNames.dropdown_root
         ),
-        dropdown: cn('absolute inset-0 opacity-0', defaultClassNames.dropdown),
+        dropdown: cn(
+          'absolute inset-0 opacity-0 bg-background text-foreground dark:bg-popover dark:text-popover-foreground',
+          defaultClassNames.dropdown
+        ),
         caption_label: cn(
           'select-none font-medium',
           captionLayout === 'label'
@@ -246,7 +252,14 @@ function CalendarForm({
   placeholder = 'Pick a date',
   ...props
 }: CalendarFormProps) {
-  const { control } = useFormContext();
+  const { control, formState } = useFormContext();
+
+  const getNestedError = (errors: any, path: string) => {
+    return path.split('.').reduce((obj, key) => obj?.[key], errors);
+  };
+
+  const fieldError = getNestedError(formState.errors, name);
+  const isTextVariant = variant === 'text';
 
   return (
     <FormField
@@ -260,17 +273,19 @@ function CalendarForm({
                 <FormControl>
                   <Button
                     variant={variant}
-                    size={variant === 'text' ? 'text' : 'default'}
+                    size={isTextVariant ? 'text' : 'default'}
                     className={cn(!field.value && 'text-muted-foreground')}
                   >
                     {field.value ? (
                       <span
-                        className={`${variant === 'text' ? 'text-sm text-foreground' : 'text-muted-foreground'}`}
+                        className={`${isTextVariant ? 'text-sm text-foreground' : 'text-muted-foreground'}`}
                       >
                         {format(field.value, 'PPP')}
                       </span>
                     ) : (
-                      <span className="text-muted-foreground/50 text-sm">
+                      <span
+                        className={`${isTextVariant && fieldError ? 'text-sm text-destructive' : 'text-muted-foreground/50 text-sm'}`}
+                      >
                         {placeholder}
                       </span>
                     )}
@@ -280,7 +295,10 @@ function CalendarForm({
                   </Button>
                 </FormControl>
               </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
+              <PopoverContent
+                className="w-auto p-0 bg-background dark:bg-popover border-border dark:border-border"
+                align="start"
+              >
                 <Calendar
                   mode="single"
                   selected={field.value}
@@ -293,7 +311,7 @@ function CalendarForm({
                 />
               </PopoverContent>
             </Popover>
-            <FormMessage />
+            {!isTextVariant && <FormMessage />}
           </FormItem>
         );
       }}

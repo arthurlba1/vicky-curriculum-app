@@ -21,7 +21,7 @@ export function middleware(request: NextRequest) {
   // Check if the current path is an auth route
   const isAuthRoute = authRoutes.includes(pathname);
 
-  // If accessing a protected route without a token, redirect to sign-in
+  // If accessing a protected route without a valid token, redirect to sign-in
   if (isProtectedRoute && !token) {
     const signInUrl = new URL('/sign-in', request.url);
     return NextResponse.redirect(signInUrl);
@@ -39,7 +39,6 @@ export function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 
-// Configure which paths the middleware should run on
 export const config = {
   matcher: [
     /*

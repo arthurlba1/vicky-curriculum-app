@@ -21,6 +21,7 @@ import { Slot } from '@radix-ui/react-slot';
 import * as z from 'zod';
 
 import { CalendarForm } from '@/components/shadcn/calendar';
+import { CheckboxForm } from '@/components/shadcn/checkbox';
 import { InputForm } from '@/components/shadcn/input';
 import { Label } from '@/components/shadcn/label';
 import { MultiSelectForm } from '@/components/shadcn/multi-select';
@@ -30,6 +31,7 @@ import { cn } from '@/lib/utils';
 const components = {
   Input: InputForm,
   Calendar: CalendarForm,
+  Checkbox: CheckboxForm,
   Textarea: TextareaForm,
   MultiSelect: MultiSelectForm,
 } as const;
@@ -64,6 +66,7 @@ type ZodFormProps<S extends z.ZodType<any, any, any>> = {
     form: UseFormReturn<z.TypeOf<S>, unknown, undefined>;
     Input: FormComponent<S, typeof InputForm>;
     Calendar: FormComponent<S, typeof CalendarForm>;
+    Checkbox: FormComponent<S, typeof CheckboxForm>;
     Textarea: FormComponent<S, typeof TextareaForm>;
     MultiSelect: FormComponent<S, typeof MultiSelectForm>;
   }) => React.JSX.Element;

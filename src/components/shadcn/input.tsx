@@ -32,8 +32,7 @@ const variants = {
   text: cn(
     'bg-transparent border-none outline-none font-semibold text-md w-full p-0',
     'placeholder:text-muted-foreground/50 caret-white',
-    'aria-invalid:placeholder-destructive',
-    "aria-invalid:shadow-[0_1px_0_0_theme('colors.destructive')]"
+    'aria-invalid:placeholder-destructive'
   ),
 };
 
@@ -53,19 +52,37 @@ function Input({ className, type, variant = 'default', ...props }: InputProps) {
   );
 }
 
-function InputForm({ name, ...props }: InputFormProps) {
-  const { control } = useFormContext();
+function InputForm({ name, variant = 'default', ...props }: InputFormProps) {
+  const { control, formState } = useFormContext();
+  const fieldError = formState.errors[name];
+  const isTextVariant = variant === 'text';
+
   return (
     <FormField
       control={control}
       name={name}
       render={({ field }) => {
+        const inputProps =
+          isTextVariant && fieldError
+            ? {
+                ...field,
+                ...props,
+                variant,
+                placeholder: fieldError.message as string,
+                'aria-invalid': true,
+              }
+            : {
+                ...field,
+                ...props,
+                variant,
+              };
+
         return (
           <FormItem>
             <FormControl>
               <div className="flex flex-col gap-2 w-full">
-                <Input {...field} {...props} onChange={field.onChange} />
-                <FormMessage />
+                <Input {...inputProps} onChange={field.onChange} />
+                {!isTextVariant && <FormMessage />}
               </div>
             </FormControl>
           </FormItem>

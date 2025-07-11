@@ -17,19 +17,36 @@ import {
   FormItem,
   FormMessage,
 } from '@/components/shadcn/form';
+import { cn } from '@/lib/utils';
 
 type List = Record<'value' | 'label', string>;
+
+const variants = {
+  default: cn(
+    'group rounded-md border border-input px-3 py-2 text-sm ring-offset-background',
+    'focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2',
+    'aria-invalid:ring-destructive/20 aria-invalid:border-destructive'
+  ),
+  text: cn(
+    'bg-transparent border-none px-0 py-0',
+    'aria-invalid:placeholder-destructive'
+  ),
+};
 
 type MultiSelectProps = {
   options: List[];
   placeholder: string;
   onValueChange: (value: List[]) => void;
+  variant?: 'default' | 'text';
+  'aria-invalid'?: boolean;
 };
 
 function MultiSelect({
   options,
   onValueChange,
   placeholder,
+  variant = 'default',
+  'aria-invalid': ariaInvalid,
 }: MultiSelectProps) {
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [open, setOpen] = React.useState(false);
@@ -70,26 +87,29 @@ function MultiSelect({
   );
 
   const list = options satisfies List[];
-
   const selectables = list.filter(item => !selected.includes(item));
+  const isTextVariant = variant === 'text';
 
   return (
     <Command
       onKeyDown={handleKeyDown}
       className="overflow-visible bg-transparent"
     >
-      <div className="group rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 ">
-        <div className="flex flex-wrap gap-2">
+      <div className={cn(variants[variant], ariaInvalid && 'aria-invalid')}>
+        <div className={cn('flex flex-wrap gap-2', isTextVariant && 'gap-1')}>
           {selected.map(item => {
             return (
               <Badge
                 key={item.value}
-                variant="default"
-                className="hover:scale-105 transition-all duration-100"
+                variant={isTextVariant ? 'secondary' : 'default'}
+                className={cn(
+                  'hover:scale-105 transition-all duration-100',
+                  isTextVariant && 'text-xs px-2 py-0.5'
+                )}
               >
                 {item.label}
                 <button
-                  className="ml-1 rounded-full outline-none ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                  className="rounded-full outline-none ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2"
                   onKeyDown={e => {
                     if (e.key === 'Enter') {
                       handleUnselect(item);
@@ -118,7 +138,13 @@ function MultiSelect({
             onBlur={() => setOpen(false)}
             onFocus={() => setOpen(true)}
             placeholder={placeholder}
-            className="ml-2 flex-1 bg-transparent outline-none placeholder:text-muted-foreground"
+            className={cn(
+              'flex-1 bg-transparent outline-none',
+              isTextVariant
+                ? 'placeholder:text-muted-foreground/50 aria-invalid:placeholder-destructive'
+                : 'ml-2 placeholder:text-muted-foreground'
+            )}
+            aria-invalid={ariaInvalid}
           />
         </div>
       </div>
@@ -161,21 +187,46 @@ function MultiSelect({
 interface MultiSelectFormProps
   extends Omit<MultiSelectProps, 'onValueChange' | 'value'> {
   name: string;
+  variant?: 'default' | 'text';
 }
 
-function MultiSelectForm({ name, ...props }: MultiSelectFormProps) {
-  const { control } = useFormContext();
+function MultiSelectForm({
+  name,
+  variant = 'default',
+  ...props
+}: MultiSelectFormProps) {
+  const { control, formState } = useFormContext();
+
+  const getNestedError = (errors: any, path: string) => {
+    return path.split('.').reduce((obj, key) => obj?.[key], errors);
+  };
+
+  const fieldError = getNestedError(formState.errors, name);
+  const isTextVariant = variant === 'text';
 
   return (
     <FormField
       control={control}
       name={name}
       render={({ field }) => {
+        const multiSelectProps =
+          isTextVariant && fieldError
+            ? {
+                ...props,
+                variant,
+                placeholder: fieldError.message as string,
+                'aria-invalid': true,
+              }
+            : {
+                ...props,
+                variant,
+              };
+
         return (
-          <FormItem>
+          <FormItem className="gap-0">
             <FormControl>
               <MultiSelect
-                {...props}
+                {...multiSelectProps}
                 onValueChange={newValues => {
                   const result = newValues.map(item =>
                     typeof item === 'string' ? item : item.value
@@ -184,7 +235,7 @@ function MultiSelectForm({ name, ...props }: MultiSelectFormProps) {
                 }}
               />
             </FormControl>
-            <FormMessage />
+            {!isTextVariant && <FormMessage />}
           </FormItem>
         );
       }}
