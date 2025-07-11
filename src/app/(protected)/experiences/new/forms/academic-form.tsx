@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
 import { AnimatePresence, motion } from 'framer-motion';
@@ -14,6 +14,7 @@ import { getSkillLabel } from '@/utils';
 interface AcademicFormProps {
   Input: any;
   Calendar: any;
+  Checkbox: any;
   Textarea: any;
   MultiSelect: any;
   form: UseFormReturn<any>;
@@ -22,12 +23,27 @@ interface AcademicFormProps {
 export function AcademicForm({
   Input,
   Calendar,
+  Checkbox,
   Textarea,
   MultiSelect,
   form,
 }: AcademicFormProps) {
   const [expanded, setExpanded] = useState(false);
   const skills = form.watch('skills') || [];
+  const isCurrent = form.watch('isCurrent');
+  const endDate = form.watch('endDate');
+
+  useEffect(() => {
+    if (isCurrent) {
+      form.setValue('endDate', undefined);
+    }
+  }, [isCurrent, form]);
+
+  useEffect(() => {
+    if (endDate) {
+      form.setValue('isCurrent', false);
+    }
+  }, [endDate, form]);
 
   return (
     <div className="flex flex-col gap-2">
@@ -46,19 +62,32 @@ export function AcademicForm({
               placeholder="Institution Name"
               className="text-foreground"
             />
-            <div className="flex items-center gap-2">
+            <div className="flex flex-row space-x-2 items-center flex-wrap">
               <Calendar
                 name="startDate"
                 placeholder="Start Date"
                 variant="text"
                 disableIcon
               />
-              <span className="text-muted-foreground/50 font-semibold">-</span>
+              <span className="text-muted-foreground/50 text-lg font-bold">
+                {' '}
+                -{' '}
+              </span>
               <Calendar
                 name="endDate"
                 placeholder="End Date"
                 variant="text"
                 disableIcon
+              />
+              <span className="text-muted-foreground/50 text-sm font-semibold">
+                {' '}
+                or{' '}
+              </span>
+              <Checkbox
+                name="isCurrent"
+                label="Current"
+                variant="text"
+                className="text-muted-foreground/50 text-sm font-semibold"
               />
             </div>
           </div>
@@ -69,7 +98,7 @@ export function AcademicForm({
             placeholder="Brief description of your academic experience"
             variant="text"
             maxLength={350}
-            rows={2}
+            rows={1}
             className="h-fit"
           />
         </ExperienceCard.Content>
@@ -77,6 +106,7 @@ export function AcademicForm({
           <div className="flex flex-col w-full">
             <MultiSelect
               name="skills"
+              variant="text"
               options={techSkillsList}
               placeholder="Select all topics used in this role"
             />
@@ -128,7 +158,7 @@ export function AcademicForm({
                 </ExperienceCard.Header>
                 <ExperienceCard.Content>
                   <Textarea
-                    name={`skillDescriptions.${skill}`}
+                    name={`skillsDescription.${skill}`}
                     placeholder={`Describe how you used ${getSkillLabel(skill)} in this role`}
                     variant="text"
                     rows={2}

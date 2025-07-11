@@ -1,24 +1,25 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { Briefcase, GraduationCap, RocketIcon, X } from 'lucide-react';
+import { toast } from 'sonner';
 
 import { FloatingActionButton as FAB } from '@/components/floating-action-button';
 import BlurText from '@/components/react-bits/BlurText';
 import { Button } from '@/components/shadcn/button';
 import { Separator } from '@/components/shadcn/separator';
+import { useCreateExperiences } from '@/lib/hooks/use-experience';
 import { type ExperienceFormData } from '@/lib/validations/experiences';
 import { ExperienceFormInstanceRef, ExperienceType } from '@/types/experience';
 
-import { createExperiences } from './actions';
-import { ExperienceFormInstance } from './new-form-instance';
+import { ExperienceFormInstance } from '@/app/(protected)/experiences/new/new-form-instance';
 
 export default function NewExperiencePage() {
   const [forms, setForms] = useState<{ id: string; type: ExperienceType }[]>(
     []
   );
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const createExperiencesMutation = useCreateExperiences();
 
   const formRefs = useRef<
     Record<string, React.RefObject<ExperienceFormInstanceRef | null>>
@@ -36,56 +37,49 @@ export default function NewExperiencePage() {
   };
 
   const handleSubmitAll = async () => {
-    if (forms.length === 0) {
-      alert('Please add at least one experience form before submitting.');
-      return;
-    }
+    if (forms.length === 0) return;
 
-    setIsSubmitting(true);
     const validatedForms: ExperienceFormData[] = [];
     const errors: string[] = [];
 
-    try {
-      for (const { id, type } of forms) {
-        const formRef = formRefs.current[id];
-        if (!formRef?.current) {
-          errors.push(`Form ${id} (${type}) reference not found`);
-          continue;
-        }
-
-        const values = await formRef.current.validateAndGetValues();
-        if (!values) {
-          errors.push(`Form ${id} (${type}) validation failed`);
-        } else {
-          validatedForms.push(values);
-        }
+    for (const { id, type } of forms) {
+      const formRef = formRefs.current[id];
+      if (!formRef?.current) {
+        errors.push(`Form ${id} (${type}) reference not found`);
+        continue;
       }
 
-      if (errors.length > 0) {
-        console.error('Validation errors:', errors);
-        alert(`Some forms have errors:\n${errors.join('\n')}`);
-        return;
-      }
-
-      const response = await createExperiences(validatedForms);
-
-      if (response.success) {
-        alert(
-          `${response.message}\n\nCreated IDs: ${response.data?.map(exp => exp.id).join(', ')}`
-        );
-
-        setForms([]);
-        formRefs.current = {};
+      const values = await formRef.current.validateAndGetValues();
+      if (!values) {
+        errors.push(`Form ${id} (${type}) validation failed`);
       } else {
-        alert(`Submission failed: ${response.message}`);
+        validatedForms.push(values);
       }
-    } catch (error) {
-      console.error('Submission error:', error);
-      alert('An unexpected error occurred during submission.');
-    } finally {
-      setIsSubmitting(false);
     }
+
+    if (errors.length > 0) {
+      console.error('Validation errors:', errors);
+      return;
+    }
+
+    createExperiencesMutation.mutate(validatedForms);
   };
+
+  useEffect(() => {
+    if (createExperiencesMutation.isError) {
+      toast.error('An error occurred while creating experiences', {
+        description: createExperiencesMutation.error?.message,
+      });
+    }
+  }, [createExperiencesMutation.error, createExperiencesMutation.isError]);
+
+  useEffect(() => {
+    if (createExperiencesMutation.isSuccess) {
+      toast.success('Experiences created successfully');
+      setForms([]);
+      formRefs.current = {};
+    }
+  }, [createExperiencesMutation.isSuccess]);
 
   return (
     <div className="flex flex-col h-full relative">
@@ -138,8 +132,11 @@ export default function NewExperiencePage() {
         <div className="sticky bottom-0 z-10 bg-background/90 backdrop-blur-none border-t border-border/50">
           <div className="flex flex-col gap-4 p-6">
             <div className="flex gap-4 justify-start">
-              <Button onClick={handleSubmitAll} disabled={isSubmitting}>
-                {isSubmitting
+              <Button
+                onClick={handleSubmitAll}
+                disabled={createExperiencesMutation.isPending}
+              >
+                {createExperiencesMutation.isPending
                   ? 'Submitting...'
                   : `Submit All (${forms.length})`}
               </Button>
@@ -149,7 +146,7 @@ export default function NewExperiencePage() {
                   setForms([]);
                   formRefs.current = {};
                 }}
-                disabled={isSubmitting}
+                disabled={createExperiencesMutation.isPending}
               >
                 Clear All
               </Button>

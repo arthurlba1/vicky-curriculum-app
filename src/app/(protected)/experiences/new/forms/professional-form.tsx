@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
 import { AnimatePresence, motion } from 'framer-motion';
@@ -16,18 +16,34 @@ interface ProfessionalFormProps {
   Calendar: any;
   Textarea: any;
   MultiSelect: any;
+  Checkbox: any;
   form: UseFormReturn<any>;
 }
 
 export function ProfessionalForm({
   Input,
   Calendar,
+  Checkbox,
   Textarea,
   MultiSelect,
   form,
 }: ProfessionalFormProps) {
   const [expanded, setExpanded] = useState(false);
   const skills = form.watch('skills') || [];
+  const isCurrent = form.watch('isCurrent');
+  const endDate = form.watch('endDate');
+
+  useEffect(() => {
+    if (isCurrent) {
+      form.setValue('endDate', undefined);
+    }
+  }, [form, isCurrent]);
+
+  useEffect(() => {
+    if (endDate) {
+      form.setValue('isCurrent', false);
+    }
+  }, [form, endDate]);
 
   return (
     <div className="flex flex-col gap-2">
@@ -63,6 +79,16 @@ export function ProfessionalForm({
                 variant="text"
                 disableIcon
               />
+              <span className="text-muted-foreground/50 text-sm font-semibold">
+                {' '}
+                or{' '}
+              </span>
+              <Checkbox
+                name="isCurrent"
+                label="Current"
+                variant="text"
+                className="text-muted-foreground/50 text-sm font-semibold"
+              />
             </div>
           </div>
         </ExperienceCard.Header>
@@ -72,7 +98,7 @@ export function ProfessionalForm({
             placeholder="Brief description of your role in this position"
             variant="text"
             maxLength={350}
-            rows={2}
+            rows={1}
             className="h-fit"
           />
         </ExperienceCard.Content>
@@ -80,6 +106,7 @@ export function ProfessionalForm({
           <div className="flex flex-col w-full">
             <MultiSelect
               name="skills"
+              variant="text"
               options={techSkillsList}
               placeholder="Select all topics used in this role"
             />
@@ -131,7 +158,7 @@ export function ProfessionalForm({
                 </ExperienceCard.Header>
                 <ExperienceCard.Content>
                   <Textarea
-                    name={`skillDescriptions.${skill}`}
+                    name={`skillsDescription.${skill}`}
                     placeholder={`Describe how you used ${getSkillLabel(skill)} in this role`}
                     variant="text"
                     rows={2}

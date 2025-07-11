@@ -43,7 +43,7 @@ export function ProjectForm({
             name="description"
             placeholder="Brief description of the project"
             maxLength={350}
-            rows={2}
+            rows={1}
             className="h-fit"
             variant="text"
           />
@@ -52,8 +52,9 @@ export function ProjectForm({
           <div className="flex flex-col w-full">
             <MultiSelect
               name="skills"
+              variant="text"
               options={techSkillsList}
-              placeholder="Select all skills used in the project"
+              placeholder="Select all topics used in the project"
             />
             <span className="text-muted-foreground/50 text-sm flex items-center gap-2">
               <TriangleAlert className="sm:w-4 h-4" /> Note: For better
@@ -103,7 +104,7 @@ export function ProjectForm({
                 </ExperienceCard.Header>
                 <ExperienceCard.Content>
                   <Textarea
-                    name={`skillDescriptions.${skill}`}
+                    name={`skillsDescription.${skill}`}
                     placeholder={`Describe how you used ${getSkillLabel(skill)} in this role`}
                     variant="text"
                     rows={2}

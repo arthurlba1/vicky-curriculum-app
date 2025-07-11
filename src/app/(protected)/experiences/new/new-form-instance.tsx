@@ -79,6 +79,7 @@ export const ExperienceFormInstance = forwardRef<
         const values = form.getValues();
         return values as ExperienceFormData;
       } catch (error) {
+        console.error(error);
         return null;
       }
     },
@@ -86,12 +87,13 @@ export const ExperienceFormInstance = forwardRef<
 
   return (
     <ZodForm form={form} className="flex flex-col gap-4" onSubmit={() => {}}>
-      {({ Input, Calendar, Textarea, MultiSelect }) => (
+      {({ Input, Calendar, Checkbox, Textarea, MultiSelect }) => (
         <>
           {type === 'professional' && (
             <ProfessionalForm
               Input={Input}
               Calendar={Calendar}
+              Checkbox={Checkbox}
               Textarea={Textarea}
               MultiSelect={MultiSelect}
               form={form}
@@ -101,6 +103,7 @@ export const ExperienceFormInstance = forwardRef<
             <AcademicForm
               Input={Input}
               Calendar={Calendar}
+              Checkbox={Checkbox}
               Textarea={Textarea}
               MultiSelect={MultiSelect}
               form={form}
