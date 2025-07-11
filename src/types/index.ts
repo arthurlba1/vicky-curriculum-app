@@ -4,7 +4,7 @@ export * from '@/types/experience';
 // API Response Structure
 export interface APIResponse<T = any> {
   data: T;
-  message: string;
+  message: string | string[];
   statusCode: number;
 }
 

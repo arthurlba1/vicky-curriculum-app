@@ -16,6 +16,10 @@ export const techSkillsList = [
     value: 'csharp',
   },
   {
+    label: 'Java',
+    value: 'java',
+  },
+  {
     label: 'C++',
     value: 'cplusplus',
   },

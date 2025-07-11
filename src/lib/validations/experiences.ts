@@ -63,7 +63,7 @@ export const professionalExperienceSchema = z.object({
     .min(1, 'Please select at least one skill')
     .max(20, 'Maximum 20 skills allowed')
     .default([]),
-  skillDescriptions: z
+  skillsDescription: z
     .record(
       z.string({
         required_error: 'Skill description is required',
@@ -129,7 +129,7 @@ export const academicExperienceSchema = z.object({
     .min(1, 'Please select at least one skill')
     .max(20, 'Maximum 20 skills allowed')
     .default([]),
-  skillDescriptions: z
+  skillsDescription: z
     .record(
       z.string({
         required_error: 'Skill description is required',
@@ -161,7 +161,7 @@ export const projectExperienceSchema = z.object({
     .min(1, 'Please select at least one skill')
     .max(20, 'Maximum 20 skills allowed')
     .default([]),
-  skillDescriptions: z
+  skillsDescription: z
     .record(
       z.string({
         required_error:
@@ -176,6 +176,19 @@ export const experienceSchema = z.discriminatedUnion('category', [
   academicExperienceSchema,
   projectExperienceSchema,
 ]);
+
+export type Experience = {
+  category: 'professional' | 'academic' | 'project';
+  name: string;
+  subname?: string;
+  startDate?: Date;
+  endDate?: Date;
+  isCurrent?: boolean;
+  location?: string;
+  description: string;
+  skills: string[];
+  skillsDescription?: Record<string, string>;
+};
 
 export type ProfessionalExperienceFormData = z.infer<
   typeof professionalExperienceSchema

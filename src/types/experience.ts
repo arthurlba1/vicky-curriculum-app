@@ -48,3 +48,7 @@ export type Experience =
 export interface ExperienceFormInstanceRef {
   validateAndGetValues: () => Promise<ExperienceFormData | null>;
 }
+
+export type ExperiencePayload = {
+  experiences: Experience[];
+};

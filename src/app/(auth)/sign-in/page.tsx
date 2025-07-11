@@ -33,7 +33,10 @@ export default function SignInPage() {
             <Input name="email" placeholder="Email" />
             <Input name="password" placeholder="Password" type="password" />
             {signInMutation.error &&
-              AlertError(signInMutation.error.statusCode)}
+              AlertError(
+                signInMutation.error.statusCode,
+                signInMutation.error.message
+              )}
             <Button type="submit" disabled={signInMutation.isPending}>
               {signInMutation.isPending && (
                 <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />

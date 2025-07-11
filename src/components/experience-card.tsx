@@ -20,7 +20,7 @@ interface ExperienceCardWrapperProps {
 
 function ExperienceCardWrapper({
   children,
-  isLoading,
+  isLoading = false,
 }: ExperienceCardWrapperProps) {
   return (
     <Card

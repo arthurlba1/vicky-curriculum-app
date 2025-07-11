@@ -51,7 +51,10 @@ export default function SignUpPage() {
               type="password"
             />
             {signUpMutation.error &&
-              AlertError(signUpMutation.error.statusCode)}
+              AlertError(
+                signUpMutation.error.statusCode,
+                signUpMutation.error.message
+              )}
             <Button type="submit" disabled={signUpMutation.isPending}>
               {signUpMutation.isPending && (
                 <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
