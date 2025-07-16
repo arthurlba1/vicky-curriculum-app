@@ -35,10 +35,12 @@ const variants = {
 
 type MultiSelectProps = {
   options: List[];
-  placeholder: string;
+  value: string[];
   onValueChange: (value: List[]) => void;
+  placeholder: string;
   variant?: 'default' | 'text';
   'aria-invalid'?: boolean;
+  disabled?: boolean;
 };
 
 function MultiSelect({
@@ -47,11 +49,18 @@ function MultiSelect({
   placeholder,
   variant = 'default',
   'aria-invalid': ariaInvalid,
+  value,
+  ...props
 }: MultiSelectProps) {
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [open, setOpen] = React.useState(false);
   const [selected, setSelected] = React.useState<List[]>([]);
   const [inputValue, setInputValue] = React.useState('');
+
+  React.useEffect(() => {
+    const initial = options.filter(opt => value.includes(opt.value));
+    setSelected(initial);
+  }, [value, options]);
 
   const handleUnselect = React.useCallback(
     (list: List) => {
@@ -145,6 +154,7 @@ function MultiSelect({
                 : 'ml-2 placeholder:text-muted-foreground'
             )}
             aria-invalid={ariaInvalid}
+            disabled={props.disabled}
           />
         </div>
       </div>
@@ -209,30 +219,22 @@ function MultiSelectForm({
       control={control}
       name={name}
       render={({ field }) => {
-        const multiSelectProps =
-          isTextVariant && fieldError
-            ? {
-                ...props,
-                variant,
-                placeholder: fieldError.message as string,
-                'aria-invalid': true,
-              }
-            : {
-                ...props,
-                variant,
-              };
-
         return (
           <FormItem className="gap-0">
             <FormControl>
               <MultiSelect
-                {...multiSelectProps}
+                options={props.options}
+                placeholder={
+                  fieldError ? fieldError.message : props.placeholder
+                }
+                variant={variant}
+                value={field.value || []}
                 onValueChange={newValues => {
-                  const result = newValues.map(item =>
-                    typeof item === 'string' ? item : item.value
-                  );
+                  const result = newValues.map(item => item.value);
                   field.onChange(result);
                 }}
+                disabled={props.disabled}
+                aria-invalid={!!fieldError}
               />
             </FormControl>
             {!isTextVariant && <FormMessage />}

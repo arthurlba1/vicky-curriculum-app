@@ -16,6 +16,7 @@ interface ProjectFormProps {
   Textarea: any;
   MultiSelect: any;
   form: UseFormReturn<any>;
+  disabled?: boolean;
 }
 
 export function ProjectForm({
@@ -23,6 +24,7 @@ export function ProjectForm({
   Textarea,
   MultiSelect,
   form,
+  disabled,
 }: ProjectFormProps) {
   const [expanded, setExpanded] = useState(false);
   const skills = form.watch('skills') || [];
@@ -36,6 +38,7 @@ export function ProjectForm({
             variant="text"
             placeholder="Project Title"
             className="text-foreground text-lg"
+            disabled={disabled}
           />
         </ExperienceCard.Header>
         <ExperienceCard.Content>
@@ -46,6 +49,7 @@ export function ProjectForm({
             rows={1}
             className="h-fit"
             variant="text"
+            disabled={disabled}
           />
         </ExperienceCard.Content>
         <ExperienceCard.Footer>
@@ -55,6 +59,7 @@ export function ProjectForm({
               variant="text"
               options={techSkillsList}
               placeholder="Select all topics used in the project"
+              disabled={disabled}
             />
             <span className="text-muted-foreground/50 text-sm flex items-center gap-2">
               <TriangleAlert className="sm:w-4 h-4" /> Note: For better
@@ -108,6 +113,7 @@ export function ProjectForm({
                     placeholder={`Describe how you used ${getSkillLabel(skill)} in this role`}
                     variant="text"
                     rows={2}
+                    disabled={disabled}
                   />
                 </ExperienceCard.Content>
               </ExperienceCard.Wrapper>

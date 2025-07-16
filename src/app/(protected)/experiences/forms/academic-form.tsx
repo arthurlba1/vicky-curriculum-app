@@ -11,23 +11,25 @@ import { Button } from '@/components/shadcn/button';
 import { techSkillsList } from '@/types/tech-skills';
 import { getSkillLabel } from '@/utils';
 
-interface ProfessionalFormProps {
+interface AcademicFormProps {
   Input: any;
   Calendar: any;
+  Checkbox: any;
   Textarea: any;
   MultiSelect: any;
-  Checkbox: any;
   form: UseFormReturn<any>;
+  disabled?: boolean;
 }
 
-export function ProfessionalForm({
+export function AcademicForm({
   Input,
   Calendar,
   Checkbox,
   Textarea,
   MultiSelect,
   form,
-}: ProfessionalFormProps) {
+  disabled,
+}: AcademicFormProps) {
   const [expanded, setExpanded] = useState(false);
   const skills = form.watch('skills') || [];
   const isCurrent = form.watch('isCurrent');
@@ -37,30 +39,32 @@ export function ProfessionalForm({
     if (isCurrent) {
       form.setValue('endDate', undefined);
     }
-  }, [form, isCurrent]);
+  }, [isCurrent, form]);
 
   useEffect(() => {
     if (endDate) {
       form.setValue('isCurrent', false);
     }
-  }, [form, endDate]);
+  }, [endDate, form]);
 
   return (
     <div className="flex flex-col gap-2">
       <ExperienceCard.Wrapper isLoading={false}>
         <ExperienceCard.Header>
-          <div className="flex flex-col justify-center">
+          <div className="flex flex-col gap-2">
             <Input
               name="title"
               variant="text"
-              placeholder="Professional Role (e.g., Senior Software Engineer)"
+              placeholder="Degree or Program Title"
               className="text-foreground text-lg"
+              disabled={disabled}
             />
             <Input
-              name="company"
+              name="institution"
               variant="text"
-              placeholder="Company Name"
+              placeholder="Institution Name"
               className="text-foreground"
+              disabled={disabled}
             />
             <div className="flex flex-row space-x-2 items-center flex-wrap">
               <Calendar
@@ -68,6 +72,7 @@ export function ProfessionalForm({
                 placeholder="Start Date"
                 variant="text"
                 disableIcon
+                disabled={disabled}
               />
               <span className="text-muted-foreground/50 text-lg font-bold">
                 {' '}
@@ -78,6 +83,7 @@ export function ProfessionalForm({
                 placeholder="End Date"
                 variant="text"
                 disableIcon
+                disabled={disabled}
               />
               <span className="text-muted-foreground/50 text-sm font-semibold">
                 {' '}
@@ -88,6 +94,7 @@ export function ProfessionalForm({
                 label="Current"
                 variant="text"
                 className="text-muted-foreground/50 text-sm font-semibold"
+                disabled={disabled}
               />
             </div>
           </div>
@@ -95,11 +102,12 @@ export function ProfessionalForm({
         <ExperienceCard.Content>
           <Textarea
             name="description"
-            placeholder="Brief description of your role in this position"
+            placeholder="Brief description of your academic experience"
             variant="text"
             maxLength={350}
             rows={1}
             className="h-fit"
+            disabled={disabled}
           />
         </ExperienceCard.Content>
         <ExperienceCard.Footer>
@@ -109,6 +117,7 @@ export function ProfessionalForm({
               variant="text"
               options={techSkillsList}
               placeholder="Select all topics used in this role"
+              disabled={disabled}
             />
             <span className="text-muted-foreground/50 text-sm flex items-center gap-2">
               <TriangleAlert className="sm:w-4 h-4" /> Note: For better
@@ -162,6 +171,7 @@ export function ProfessionalForm({
                     placeholder={`Describe how you used ${getSkillLabel(skill)} in this role`}
                     variant="text"
                     rows={2}
+                    disabled={disabled}
                   />
                 </ExperienceCard.Content>
               </ExperienceCard.Wrapper>

@@ -5,9 +5,9 @@ import { useForm } from 'react-hook-form';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { AcademicForm } from '@/app/(protected)/experiences/new/forms/academic-form';
-import { ProfessionalForm } from '@/app/(protected)/experiences/new/forms/professional-form';
-import { ProjectForm } from '@/app/(protected)/experiences/new/forms/project-form';
+import { AcademicForm } from '@/app/(protected)/experiences/forms/academic-form';
+import { ProfessionalForm } from '@/app/(protected)/experiences/forms/professional-form';
+import { ProjectForm } from '@/app/(protected)/experiences/forms/project-form';
 import { ZodForm } from '@/components/shadcn/form';
 import {
   type ExperienceFormData,
@@ -20,12 +20,14 @@ import { ExperienceFormInstanceRef, ExperienceType } from '@/types/experience';
 interface ExperienceFormInstanceProps {
   id: string;
   type: ExperienceType;
+  defaultValues?: ExperienceFormData;
+  disabled?: boolean;
 }
 
 export const ExperienceFormInstance = forwardRef<
   ExperienceFormInstanceRef,
   ExperienceFormInstanceProps
->(({ type }, ref) => {
+>(({ type, defaultValues, disabled }, ref) => {
   const getSchemaAndDefaults = () => {
     switch (type) {
       case 'professional':
@@ -66,9 +68,11 @@ export const ExperienceFormInstance = forwardRef<
 
   const form = useForm({
     resolver: zodResolver(schema as any),
-    defaultValues: defaults as any,
+    defaultValues: defaultValues ?? (defaults as any),
     mode: 'onSubmit',
   });
+
+  console.log('Default values:', defaultValues);
 
   useImperativeHandle(ref, () => ({
     async validateAndGetValues(): Promise<ExperienceFormData | null> {
@@ -97,6 +101,7 @@ export const ExperienceFormInstance = forwardRef<
               Textarea={Textarea}
               MultiSelect={MultiSelect}
               form={form}
+              disabled={disabled}
             />
           )}
           {type === 'academic' && (
@@ -107,6 +112,7 @@ export const ExperienceFormInstance = forwardRef<
               Textarea={Textarea}
               MultiSelect={MultiSelect}
               form={form}
+              disabled={disabled}
             />
           )}
           {type === 'project' && (
@@ -115,6 +121,7 @@ export const ExperienceFormInstance = forwardRef<
               Textarea={Textarea}
               MultiSelect={MultiSelect}
               form={form}
+              disabled={disabled}
             />
           )}
         </>

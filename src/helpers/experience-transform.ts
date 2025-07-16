@@ -4,6 +4,8 @@ import {
   ProfessionalExperienceFormData,
   ProjectExperienceFormData,
 } from '@/lib/validations/experiences';
+import { ExperienceResponse } from '@/types';
+import { techSkillsList } from '@/types/tech-skills';
 
 export const transformExperienceFormData = (
   data:
@@ -24,13 +26,104 @@ export const transformExperienceFormData = (
   }
 };
 
+// Reverse transform functions - from API response to form data
+export const transformExperienceResponseToFormData = (
+  experience: ExperienceResponse
+):
+  | ProfessionalExperienceFormData
+  | AcademicExperienceFormData
+  | ProjectExperienceFormData => {
+  const { category } = experience;
+
+  if (category === 'professional') {
+    return transformProfessionalExperienceResponseToFormData(experience);
+  }
+  if (category === 'academic') {
+    return transformAcademicExperienceResponseToFormData(experience);
+  }
+  if (category === 'project') {
+    return transformProjectExperienceResponseToFormData(experience);
+  }
+
+  throw new Error(`Unknown experience category: ${category}`);
+};
+
+const transformProfessionalExperienceResponseToFormData = (
+  experience: ExperienceResponse
+): ProfessionalExperienceFormData => {
+  const skillsDescription: Record<string, string> = {};
+  const skills = experience.topics.map(topic => {
+    skillsDescription[topic.category] = topic.description || '';
+
+    const found = techSkillsList.find(t => t.value === topic.category);
+    return found ?? { value: topic.category, label: topic.category };
+  });
+
+  return {
+    category: 'professional',
+    title: experience.name,
+    company: experience.subName,
+    startDate: new Date(experience.startDate),
+    endDate: experience.endDate ? new Date(experience.endDate) : undefined,
+    isCurrent: experience.isCurrent || false,
+    location: experience.location || '',
+    description: experience.description,
+    skills: skills.map(skill => skill.value),
+    skillsDescription,
+  };
+};
+
+const transformAcademicExperienceResponseToFormData = (
+  experience: ExperienceResponse
+): AcademicExperienceFormData => {
+  const skillsDescription: Record<string, string> = {};
+  const skills = experience.topics.map(topic => {
+    skillsDescription[topic.category] = topic.description || '';
+
+    const found = techSkillsList.find(t => t.value === topic.category);
+    return found ?? { value: topic.category, label: topic.category };
+  });
+
+  return {
+    category: 'academic',
+    title: experience.name,
+    institution: experience.subName,
+    startDate: new Date(experience.startDate),
+    endDate: experience.endDate ? new Date(experience.endDate) : undefined,
+    isCurrent: experience.isCurrent || false,
+    description: experience.description,
+    skills: skills.map(skill => skill.value),
+    skillsDescription,
+  };
+};
+
+const transformProjectExperienceResponseToFormData = (
+  experience: ExperienceResponse
+): ProjectExperienceFormData => {
+  const skillsDescription: Record<string, string> = {};
+  const skills = experience.topics.map(topic => {
+    skillsDescription[topic.category] = topic.description || '';
+
+    const found = techSkillsList.find(t => t.value === topic.category);
+    return found ?? { value: topic.category, label: topic.category };
+  });
+
+  return {
+    category: 'project',
+    title: experience.name,
+    description: experience.description,
+    skills: skills.map(skill => skill.value),
+    skillsDescription,
+  };
+};
+
 const transformProfessionalExperienceFormData = (
   data: ProfessionalExperienceFormData
 ): Experience => {
   return {
     category: 'professional',
     name: data.title,
-    subname: data.company,
+    subName: data.company,
     startDate: data.startDate,
     endDate: data.endDate,
     isCurrent: data.isCurrent,
@@ -47,7 +140,7 @@ const transformAcademicExperienceFormData = (
   return {
     category: 'academic',
     name: data.title,
-    subname: data.institution,
+    subName: data.institution,
     startDate: data.startDate,
     endDate: data.endDate,
     isCurrent: data.isCurrent,

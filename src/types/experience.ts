@@ -52,3 +52,22 @@ export interface ExperienceFormInstanceRef {
 export type ExperiencePayload = {
   experiences: Experience[];
 };
+
+export interface ExperienceTopic {
+  id: string;
+  category: string;
+  description: string;
+}
+
+export interface ExperienceResponse {
+  id: string;
+  category: ExperienceType;
+  name: string;
+  subName: string;
+  startDate: string;
+  endDate?: string;
+  isCurrent?: boolean;
+  location: string;
+  description: string;
+  topics: ExperienceTopic[];
+}

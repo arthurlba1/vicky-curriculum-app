@@ -5,6 +5,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Briefcase, GraduationCap, RocketIcon, X } from 'lucide-react';
 import { toast } from 'sonner';
 
+import { ExperienceFormInstance } from '@/app/(protected)/experiences/form-instance';
 import { FloatingActionButton as FAB } from '@/components/floating-action-button';
 import BlurText from '@/components/react-bits/BlurText';
 import { Button } from '@/components/shadcn/button';
@@ -12,8 +13,6 @@ import { Separator } from '@/components/shadcn/separator';
 import { useCreateExperiences } from '@/lib/hooks/use-experience';
 import { type ExperienceFormData } from '@/lib/validations/experiences';
 import { ExperienceFormInstanceRef, ExperienceType } from '@/types/experience';
-
-import { ExperienceFormInstance } from '@/app/(protected)/experiences/new/new-form-instance';
 
 export default function NewExperiencePage() {
   const [forms, setForms] = useState<{ id: string; type: ExperienceType }[]>(

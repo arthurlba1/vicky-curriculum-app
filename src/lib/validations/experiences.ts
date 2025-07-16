@@ -180,7 +180,7 @@ export const experienceSchema = z.discriminatedUnion('category', [
 export type Experience = {
   category: 'professional' | 'academic' | 'project';
   name: string;
-  subname?: string;
+  subName?: string;
   startDate?: Date;
   endDate?: Date;
   isCurrent?: boolean;
